@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IPL Web Application</title>
+</head>
+<body>
+<h1>Team Vs Team</h1>
+
+<form action="/teamvteam" method="get">
+    <label>Select Team1</label>
+    <select name="team1">
+        {% for item in teams %}
+            <option>{{ item }}</option>
+        {% endfor %}
+    </select><br><br>
+    <label>Select Team2</label>
+    <select name="team2">
+        {% for item in teams %}
+            <option>{{ item }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <input type="submit" value="Find Track Record">
+</form>
+
+{% if result %}
+    {% for i in result %}
+        <p>{{ i }} : {{ result[i] }}</p>
+    {% endfor %}
+{% endif %}
+
+<h2>Batsman Record</h2>
+
+<form action="/batsman-record" method="get">
+    <label>Enter Batsman Name</label>
+    <input type="text" name="batsman_name" placeholder="eg MS Dhoni">
+    <input type="submit" value="Get Record">
+</form>
+
+<br>
+{% if batsman_result %}
+
+<h3>{{ batsman_name }}</h3>
+
+<h4>Overall Record</h4>
+
+<table border="1">
+    <tr>
+        <th>Statistic</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>Runs</td>
+        <td>{{ batsman_result['all']['runs'] }}</td>
+    </tr>
+    <tr>
+        <td>Innings</td>
+        <td>{{ batsman_result['all']['innings'] }}</td>
+    </tr>
+    <tr>
+        <td>Average</td>
+        <td>{{ batsman_result['all']['avg']|round(2) }}</td>
+    </tr>
+    <tr>
+        <td>Strike Rate</td>
+        <td>{{ batsman_result['all']['strikeRate']|round(2) }}</td>
+    </tr>
+    <tr>
+        <td>Fours</td>
+        <td>{{ batsman_result['all']['fours'] }}</td>
+    </tr>
+    <tr>
+        <td>Sixes</td>
+        <td>{{ batsman_result['all']['sixes'] }}</td>
+    </tr>
+    <tr>
+        <td>50s</td>
+        <td>{{ batsman_result['all']['fifties'] }}</td>
+    </tr>
+    <tr>
+        <td>100s</td>
+        <td>{{ batsman_result['all']['hundreds'] }}</td>
+    </tr>
+    <tr>
+        <td>Highest Score</td>
+        <td>{{ batsman_result['all']['highestScore'] }}</td>
+    </tr>
+    <tr>
+        <td>Man of the Match</td>
+        <td>{{ batsman_result['all']['mom'] }}</td>
+    </tr>
+</table>
+
+<br><br>
+
+<h4>Record Against Teams</h4>
+
+<table border="1">
+    <tr>
+        <th>Team</th>
+        <th>Runs</th>
+        <th>Avg</th>
+        <th>SR</th>
+        <th>50s</th>
+        <th>100s</th>
+        <th>Highest Score</th>
+    </tr>
+
+    {% for team, stats in batsman_result['against'].items() %}
+    <tr>
+        <td>{{ team }}</td>
+        <td>{{ stats['runs'] }}</td>
+        <td>{{ stats['avg'] }}</td>
+        <td>{{ stats['strikeRate']|round(2) }}</td>
+        <td>{{ stats['fifties'] }}</td>
+        <td>{{ stats['hundreds'] }}</td>
+        <td>{{ stats['highestScore'] }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% endif %}
+
+
+<h2>Bowler Record</h2>
+
+<form action="/bowler-record" method="get">
+    <label>Enter Bowler Name</label>
+    <input type="text" name="bowler_name" placeholder="JJ Bumrah">
+    <input type="submit" value="Get Record">
+</form>
+
+<br>
+{% if bowler_result %}
+
+<h3>{{ bowler_name }}</h3>
+
+<h4>Overall Bowling Record</h4>
+
+<table border="1">
+    <tr>
+        <th>Statistic</th>
+        <th>Value</th>
+    </tr>
+
+    {% for key, value in bowler_result['all'].items() %}
+    <tr>
+        <td>{{ key }}</td>
+        <td>{{ value }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br><br>
+
+<h4>Record Against Teams</h4>
+
+<table border="1">
+    <tr>
+        <th>Team</th>
+
+        {% for stat in bowler_result['against'].values()|first %}
+        <th>{{ stat }}</th>
+        {% endfor %}
+    </tr>
+
+    {% for team, stats in bowler_result['against'].items() %}
+    <tr>
+        <td>{{ team }}</td>
+
+        {% for value in stats.values() %}
+        <td>{{ value }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+
+{% endif %}
+
+</body>
+</html>
